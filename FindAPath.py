@@ -1,9 +1,9 @@
 #!/usr/local/bin/python3
 
-from collections import deque
+#from collections import deque
 import time
 
-def findShortestPath(start, end, w_table):
+def find_shortest_path(start, end, w_table):
     row = len(w_table)
     col = len(w_table[0])
     values = [[-1 for y in range(col)] for x in range(row)]
@@ -19,21 +19,21 @@ def findShortestPath(start, end, w_table):
         decided[curr[0]][curr[1]] = True
 
         # update values
-        def updateWeight(x, y):
+        def update_weight(x, y):
             if 0 <= x < row and 0 <= y < col and not decided[x][y]:
                 w = values[curr[0]][curr[1]] + w_table[x][y]
                 if values[x][y] == -1 or values[x][y] > w:
                     values[x][y] = w
                 candidates.add((x, y))
-        
-        updateWeight(curr[0], curr[1] - 1)
-        updateWeight(curr[0], curr[1] + 1)
-        updateWeight(curr[0] - 1, curr[1])
-        updateWeight(curr[0] + 1, curr[1])
+
+        update_weight(curr[0], curr[1] - 1)
+        update_weight(curr[0], curr[1] + 1)
+        update_weight(curr[0] - 1, curr[1])
+        update_weight(curr[0] + 1, curr[1])
 
         # pick-up the next node
         next_node = None
-        min_value= values[curr[0]][curr[1]] + 3001
+        min_value = values[curr[0]][curr[1]] + 3001
         for node in candidates:
             if values[node[0]][node[1]] < min_value:
                 next_node = node
@@ -61,6 +61,6 @@ for r in range(ROW):
 Q_NUM = int(input().strip())
 for i in range(Q_NUM):
     start_x, start_y, end_x, end_y = list(map(int, input().strip().split()))
-    print(findShortestPath((start_x, start_y), (end_x, end_y), weight_table))
+    print(find_shortest_path((start_x, start_y), (end_x, end_y), weight_table))
 
 print("--- %s seconds ---" % (time.time() - start_time))
