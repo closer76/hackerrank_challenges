@@ -16,7 +16,7 @@ struct Pair {
     int right;
 };
 
-Node* constructTree(int index, const vector<Pair>& pairs, int depth, const vector<bool>& do_swap) {
+Node* constructTree(int index, const vector<Pair>& pairs) {
     //cout << "index=" << index << endl;
     if (index < 0) {
         return nullptr;
@@ -25,13 +25,9 @@ Node* constructTree(int index, const vector<Pair>& pairs, int depth, const vecto
     Node* result = new Node;
     result->data = index + 1;
     auto& pair = pairs[index];
-    if (do_swap[depth]) {
-        result->right = constructTree(pair.left - 1, pairs, depth + 1, do_swap);
-        result->left = constructTree(pair.right - 1, pairs, depth + 1, do_swap);        
-    } else {
-        result->left = constructTree(pair.left - 1, pairs, depth + 1, do_swap);
-        result->right = constructTree(pair.right - 1, pairs, depth + 1, do_swap);
-    }
+    result->left = constructTree(pair.left - 1, pairs);
+    result->right = constructTree(pair.right - 1, pairs);
+
     return result;
 }
 
@@ -40,6 +36,12 @@ void inOrder(Node* root, string& history) {
         inOrder(root->left, history);
         history += (to_string(root->data) + " ");
         inOrder(root->right, history);
+    }
+}
+
+void doSwap(Node* root) {
+    if (root) {
+        swap(root->left, root->right);
     }
 }
 
@@ -52,31 +54,36 @@ int main() {
     for (int i = 0; i < node_count; i++) {
         cin >> pairs[i].left >> pairs[i].right;
     }
-
-    int op_count;
-    cin >> op_count;
-    vector<bool>do_swap(1024, false);
-    for (int i = 0; i < op_count; i++) {
-        cin >> tmp;
-        do_swap[tmp - 1] = !do_swap[tmp - 1];
-    }
+    Node* tree = constructTree(0, pairs);
     
-    for (int i = 511; i >= 0; i--) {
-        //cout << "i=" << i << "," << do_swap[i] << endl;
-        if (do_swap[i]) {
-            for (int k = 2 * (i + 1) - 1; k < 1024; k += (i + 1)) {
-                //cout << "i=" << i << "; k=" << k << endl;
-                do_swap[k] = !do_swap[k];
+    vector<vector<Node*>> depths(1, vector<Node*>(1, tree));
+    Node* curr = tree;
+    for (int level = 0; !depths[level].empty(); level++) {
+        depths.push_back(vector<Node*>(0));
+        for (auto ptr : depths[level]) {
+            if (ptr->left) {
+                depths[level + 1].push_back(ptr->left);
+            }
+            if (ptr->right) {
+                depths[level + 1].push_back(ptr->right);
             }
         }
-    }
+    };
     
-    Node* tree = constructTree(0, pairs, 0, do_swap);
-    string result = "";
-    inOrder(tree, result);
-    //result.erase(result.find_last_not_of(" \n\r\t")+1);
+    int op_count;
+    cin >> op_count;
+    for (int i = 0; i < op_count; i++) {
+        cin >> tmp;
+        for (int j = tmp; j < depths.size(); j += tmp) {
+            for (auto ptr : depths[j - 1]) {
+                doSwap(ptr);
+            }
+        }
 
-    cout << result << endl;
-    
+        string result = "";
+        inOrder(tree, result);
+        cout << result << endl;
+    }
+
     return 0;
 }
