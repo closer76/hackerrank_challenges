@@ -2,15 +2,7 @@
 
 #import sys
 
-def dbg_print(*objects):
-    DBG = False
-    #DBG = True
-    if DBG:
-        print(*objects)
-
 def processStacks(a, b, x):
-    #print(a)
-
     a.reverse()
     b.reverse()
 
@@ -24,31 +16,20 @@ def processStacks(a, b, x):
         popped_count += 1
 
     while b and popped_sum + b[-1] <= x:
-        dbg_print('  sum=%d, b[-1]=%d' % (popped_sum, b[-1]))
         popped_sum += b.pop()
         popped_count += 1
 
-    dbg_print('  count = ', popped_count)
-
     while b and popped_a:
-        dbg_print('  popped_a=' + str(popped_a))
-        dbg_print('  b       =' + str(b[-10:]))
-        dbg_print('  sum     =' + str(popped_sum))
-
         sum_a = 0
         sum_b = 0
         while b and popped_a:
             sum_a += popped_a.pop()
             sum_b += b.pop()
             if b and sum_b + b[-1] <= sum_a + (x - popped_sum):
-                dbg_print('  sum_b = ', sum_b, ', b.top() = ', b[-1])
-                dbg_print('  sum_a = ', sum_a, '; x - popped_sum = ', x - popped_sum)
                 popped_sum = popped_sum - sum_a + sum_b
                 while b and popped_sum + b[-1] <= x:
-                    dbg_print('  sum=%d, b[-1]=%d' % (popped_sum, b[-1]))
                     popped_sum += b.pop()
                     popped_count += 1
-                dbg_print('  count = ', popped_count)
                 break
 
     return popped_count
