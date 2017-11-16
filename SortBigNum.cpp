@@ -24,19 +24,19 @@ int main() {
         if (a.length() != b.length()) {
             return a.length() < b.length();
         } else {
-	    auto itor_a = a.begin();
-	    auto itor_b = b.begin();
+            auto itor_a = a.begin();
+            auto itor_b = b.begin();
             for (; itor_a != a.end(); ++itor_a, ++itor_b) {
-		if (*itor_a != *itor_b) {
-		    return *itor_a < *itor_b;
-		}
-	    }
+                if (*itor_a != *itor_b) {
+                    return *itor_a < *itor_b;
+                }
+            }
             //    if (a[i] != b[i]) {
             //        return a[i] < b[i];
             //    }
             //}
 
-	    //return a < b;
+	        //return a < b;
         }
         
         // Two strings are equal, so return whether true or false is ok.
