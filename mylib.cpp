@@ -5,25 +5,12 @@
 using namespace std;
 
 namespace KennethLo {
-
-    template <typename T>
-    ostream& operator<<(ostream& os, const vector<T>& v)
-    {
-        os << '[';
-        size_t i = 0;
-        for (auto itor = v.begin(); itor != v.end(); itor++)
-        {
-            os << *itor;
-            if (++i != v.size())
-            {
-                os << ',';
-            }
-        }
-        os << ']';
-
-        return os;
-    }
-
+    /**
+     * Find all primes in a given boundary using Sieve of Eratosthenes 
+     * algorithm.
+     * 
+     * @param is_prime A vector records whether index i is a prime or not.
+     **/
     void seive_for_primes(vector<int>& is_prime) {
         int test_limit = ceil(sqrt(is_prime.size()));
         is_prime[0] = 0;
@@ -35,5 +22,29 @@ namespace KennethLo {
                 }
             }
         }
+    }
+
+    /**
+     * A function to calculate p-th power of an integer, with mod function.
+     * 
+     * @param base Base integer.
+     * @param p Power factor.
+     * @param mod The answer will be modulo by mod before returned.
+     */
+    int power_mod(int base, int p, int mod)
+    {
+        long long result = 1;
+        long long tmp = base % mod;
+
+        while(p)
+        {
+            if (p & 1) {
+                result = (result * tmp) % mod;
+            }
+            p >>= 1;
+            tmp = (tmp * tmp) % mod;
+        }
+
+        return (int)(result % mod);
     }
 }
