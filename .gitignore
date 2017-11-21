@@ -1,4 +1,5 @@
 a.out
 *.hi
 *.o
+*.exe
 .vscode
