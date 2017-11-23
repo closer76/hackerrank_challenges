@@ -29,6 +29,33 @@ namespace KennethLo {
     }
 
     /**
+     * @brief Calculate Greatest Common Divisor (GDC) and Bézout's identity
+     *        using Extended Euclidean algorithm.
+     * 
+     * @tparam T An integer type.
+     * @param a [in]
+     * @param b [in]
+     * @param g [out] GDC of a & b.
+     * @param x [out] Bézout's identity where g = a * x + b * y.
+     * @param y [out] Bézout's identity where g = a * x + b * y.
+     */
+    template <typename T>
+    void ext_gdc(T a, T b, T& g, T& x, T& y)
+    {
+        if (b == 0)
+        {
+            g = a;
+            x = 1;
+            y = 0;
+        }
+        else
+        {
+            ext_gdc(b, a%b, g, y, x);
+            y = y - (a / b) * x;
+        }
+    }
+
+    /**
      * Find all primes in a given boundary using Sieve of Eratosthenes 
      * algorithm.
      * 
