@@ -5,7 +5,7 @@ filterOut :: [Int] -> Int -> [Int] -> [Int]
 filterOut [] _ = id
 filterOut (x:xs) level = filterOut xs (level+1) . f
     where f = if level == 1 || level == 2
-              then filter (\a -> a > x + 2 || a < x - 2)
+              then filter (\a -> abs(a-x) > 2)
               else filter (\a -> a /= x && a /= (x + level) && a /= (x - level))
 
 solve_body :: Int -> Int -> [Int] -> Int
