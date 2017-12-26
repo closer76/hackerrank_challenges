@@ -2,6 +2,7 @@
 {- URL: https://www.hackerrank.com/challenges/super-queens-on-a-chessboard/problem -}
 
 import Data.List
+import Control.Monad (guard)
 
 {- Solution 1: Original trial. -}
 filterOut :: [Int] -> Int -> [Int] -> [Int]
@@ -25,7 +26,14 @@ solve_body' (last2, last1) (diag, adiag, queens) left =
     sum $ map (\x -> solve_body' (last1, x) ((x-row):diag, (x+row):adiag, x:queens) $ delete x left) filtered
     where
         row = 1 + length queens
-        filtered = [x | x <- left, abs(x-last2) /= 1, abs(x-last1) /= 2, not $ elem (x-row) diag, not $ elem (x+row) adiag]
+        --filtered = [x | x <- left, abs(x-last2) /= 1, abs(x-last1) /= 2, not $ elem (x-row) diag, not $ elem (x+row) adiag]
+        filtered = do
+            x <- left
+            guard(abs(x-last2) /= 1)
+            guard(abs(x-last1) /= 2)
+            guard(not $ elem (x-row) diag)
+            guard(not $ elem (x+row) adiag)
+            return x
                              
 solve' n = solve_body' (100, 100) ([], [], []) [1..n]
 
