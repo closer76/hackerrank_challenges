@@ -2,7 +2,7 @@
 	g++ --std=c++14 -o $@ $^
 
 %.exe: %.hs
-	ghc -O -o $@ $^
+	stack ghc -- -O -o $@ $^
 
 mylib.o: mylib.cpp
 	g++ -c --std=c++14 -o $@ $<
