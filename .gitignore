@@ -3,3 +3,4 @@ a.out
 *.o
 *.exe
 .vscode
+__pycache__
