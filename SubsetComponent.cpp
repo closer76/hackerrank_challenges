@@ -1,4 +1,5 @@
 #include <iostream>
+#include <list>
 #include <vector>
 #include <bitset>
 
@@ -22,6 +23,65 @@ int HammingWeight(uint64_t num) {
     return static_cast<int>((num * h01) >> 56);
 }
 
+list<vector<uint64_t>> calcRecursion(vector<uint64_t>& d) {
+    if (d.size() == 0) {
+        return {{0}};
+    }
+    else
+    {
+        // pop out the last element
+        uint64_t edges = d.back();
+        d.pop_back();
+
+        // calc the result with n-1 elements
+        auto ret = calcRecursion(d);
+
+        // calc the results with newly added element
+        list<vector<uint64_t>> tmp;
+        for (const auto& n : ret) {
+            vector<uint64_t> new_node;
+            for (auto x : n) {
+                if (x == 0 || (edges & x) != 0) {
+                    edges |= x;
+                } else {
+                    new_node.push_back(x);
+                }
+            }
+            new_node.push_back(edges);
+            tmp.push_back(new_node);
+        }
+
+        // concat two lists
+        ret.splice(ret.end(), tmp);
+
+        return ret;
+    }
+}
+
+vector<vector<uint64_t>> calcIteration(vector<uint64_t>& d) {
+    vector<vector<uint64_t>> graph;
+    graph.push_back(vector<uint64_t>(1, 0));
+    for (int i = 0; i < d.size(); ++i) {
+        int count = graph.size();
+        for (int j = 0; j < count; j++) {
+            vector<uint64_t> node;
+            uint64_t accu = d[i];
+            int comp_count = graph[j].size();
+            for (auto x : graph[j]) {
+                if (x == 0 || (accu & x) != 0) {
+                    accu |= x;
+                } else {
+                    node.push_back(x);
+                }
+            }
+            node.push_back(accu);
+            graph.push_back(node);
+        }
+    }
+
+    return graph;
+}
+
 int main() {
     ios::sync_with_stdio(false);
 
@@ -33,24 +93,13 @@ int main() {
         d[i] = (bitset<64>(d[i]).count() > 1) ? d[i] : 0;
     }
 
-    vector<vector<uint64_t>> graph;
-    graph.push_back(vector<uint64_t>(1, 0));
-    for (int i = 0; i < d.size(); ++i) {
-        int count = graph.size();
-        for (int j = 0; j < count; j++) {
-            vector<uint64_t> node(graph[j]);
-            uint64_t accu = d[i];
-            int comp_count = node.size();
-            for (int k = comp_count - 1; k >= 0; --k) {
-                if (node[k] == 0 || (accu & node[k]) != 0) {
-                    accu |= node[k];
-                    node.erase(node.begin() + k);
-                }
-            }
-            node.push_back(accu);
-            graph.push_back(node);
-        }
-    }
+#if 0
+    auto graph = calcIteration(d);
+    cout << graph << endl;
+#else
+    auto graph = calcRecursion(d);
+    cout << graph << endl;
+#endif
 
     int ans = 0;
     for (auto& v : graph) {
